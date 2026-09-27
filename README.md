@@ -23,13 +23,13 @@ Learning steps are consist of two main phases:
 
 ### 1- Feature extraction phase
 Feature extraction phase is consist of four steps:
-- **Convolution Filters**: Feature extraction phase is the most critical one since it includes Convolution filters so-called kernels (matrices). Each kernel creates one feature-map after its processes. They generally have a 3x3 shape. Each matrix's task is to look for one spesific feature (like vertical lines) in coming image (32x32). Convolution filter (3x3) applies its weights to each 3x3 area in three channels (RGB) of each image. Then, it adds three different results together to get one numeric value. This value indicates how prominent wanted feature (vertical lines) is in that spesific area. Each filter does the same thing to each 3x3 area in the 32x32 image until it completed each value in the feature map.<br>
+- **Convolution Filters**: Feature extraction phase is the most critical one since it includes Convolution filters so-called kernels (matrices). Each kernel creates one feature-map after its processes. They generally have a 3x3 shape. Each matrix's task is to look for one spesific feature (like vertical lines) in coming image (32x32). Convolution filter (3x3) applies its weights to each 3x3 area in three channels (RGB) of each image. Then, it adds three different results together to get one numeric value. This value indicates how prominent wanted feature (vertical lines) is in that spesific area. Each filter does the same thing to each 3x3 area in the 32x32 image until it completed each value in its feature map.<br>
 
 - **Batch Normalization**: Same filter is applied to each image in the batch. For a batch which includes 64 images, it collects all 64 feature maps created by one spesific filter. Batch normalization does not only use 64 images, it also includes all pixels (height and width) in these feature maps. It sums all of these values together to calculate one mean and variance for that spesific feature (like vertical lines). Then, it normalizes each numeric value using this mean and variance. Finally, it applies two learnable parameters (scale and shift) to keep nonlinear properties of the network. Each 32 feature map does this same process independently after convolution phase.
-- **Activation Function (ReLU)**: Takes each value in 32 feture maps and changes those which are negative to zero. It does not change positive values. Basically the lowest value in the batch becomes zero (0) after ReLU.
+- **Activation Function (ReLU)**: Takes each value in 32 feture maps and changes those which are negative to zero. It does not change positive values. Basically the lowest value in the feature maps becomes zero (0) after ReLU.
 - **Pooling**: It basically cuts off half of the pixels in the feature maps (reshapes feature maps). There are two variations of pooling. Both uses 2x2 kernels with two pixel steps (stride=2) every time:
     - **Max Pooling**: Takes the highest value in the 2x2 area.
-    - **Average Pooling**: Takes the average of 4 values in the 2x2 area.
+    - **Average Pooling**: Takes the average of four values in the 2x2 area.
 
 These four steps are applied in a row for each layer in the feature extraction phase. Two to four loops is enough in general. More can be applied where it is needed. While the number of the feature maps is doubled after each loop, shape of the feature maps is divided 50/50.
 ![Conv](assets/conv-layer.png "Conv-BN-ReLU-Pooling steps")
@@ -38,7 +38,7 @@ These four steps are applied in a row for each layer in the feature extraction p
 ### 2- Classification Phase (Fully Connected Layers)
 Classification phase, uses as the same structure as classic ANN does. Since ANN takes a 1D vector as input, we have to apply flatten after the last conv loop:
   - What is '*flatten*' and why do we apply it?
-    - Every convolution loop returns a tensor which has four dimension. For example, after the third loop, we have this tensor:  [64,128,8,8]<br> 
+    - Each convolution loop returns a tensor which has four dimension. For example, after the third loop, we have this tensor:  [64,128,8,8]<br> 
     In this tensor;<br> 
     First index➡️ indicates batch size<br>
     Second index ➡️ indicates the current number of feature maps<br>
@@ -51,7 +51,7 @@ With this tensor which includes four dimensions, ANN (decision maker) can not wo
 - Remainder of the network has nothing complex. Classic ANN process follows;
   - 1D vector ➡️ Fully Connected Layer ➡️ ReLU ➡️ Dropout <br>
 >[!NOTE]
-> Generally, two fully connected layers are enough to feed the model's accuracy in decision making. As long as its feature extraction phase is created talented enough. Dropout is optional in fully connected layers. But it is usually a sector standart to use it in order to prevent overfitting.
+> Generally, two fully connected layers are enough to feed the model's accuracy in decision making as long as its feature extraction phase is created talented enough. Dropout is optional in fully connected layers. But it is usually a sector standart to use it in order to prevent overfitting.
 
 ## Model Training Details
 No ready-to-use model was used during the training process. Every step was taken originally. The model was built from scratch as you can observe in the given `.py` files.<br>
@@ -84,7 +84,7 @@ In order to assess the model's accuracy with an image which was not seen by the 
   <img src="assets/akinci.png" alt="Description">
 </div>
 <div align="center">
-  <h4>Model Output</h4>
+  <h4>MODEL OUTPUT</h4>
   <img src="assets/model-output.png" alt="Description">
 </div>
 
@@ -105,14 +105,14 @@ and the message in the print() function, appeared in the terminal more than i gu
 
 #### Setbacks and failures
 First of all, i have discovered a lot of new details about AI models in this project. I deployed variety of solutions against *overfitting* and *underfitting*.
-- I started traninig with 15 epochs which caused *underfitting*. Peak accuracy values were somewhere between 60%-70% and that was quite unsufficient. Then, i tried to make it 25 and that caused *overfitting*. The model had learned the training dataset well but the difference between training and test accuracies had peaked with 10%-15%.
+- I started traninig with 15 epochs which caused *underfitting*. Peak accuracy values were somewhere between 60%-70% and that was quite unsufficient. Then, i tried to make it 25 epochs and that caused *overfitting*. The model had learned the training dataset well but the difference between training and test accuracies had peaked with 10%-15%.
 - After that, i decided to add batch normalization which i had not used until that time. It speeded up the model's learning but leaded to a more serious *overfitting* problem which i could not solve until i decided to apply *Data Augmentation*.
 - Since *Overfitting* became the biggest issue after BN was deployed in the Convolution Layers, i had to use some *Data Augmentation* functions in order to diversify the training dataset which were aforementioned here: [Model Training Details](#model-training-details).
-- With that, the model had settled in a stronger position where *Overfitting* was not a big issue anymore. The next goal was to reach the lowest loss value possible because i thought that the model had a greater capacity after *Data Augmentation*. In order to achieve that, i reduced two parameters' values which i thought were limiting the model's capacity:  
+- With that, the model had settled in a stronger position where *Overfitting* was not a big issue anymore. The next goal was to reach the lowest loss value possible because i thought that the model had a greater capacity after *Data Augmentation*. In order to achieve that, i changed two parameters' values which i thought were limiting the model's capacity:  
   - Dropout = 0.5 > 0.2
   - lr = 0.01 > 0.1
 
-- These two modifications leaded to a problem that i had not experienced before: *Overshooting* which is caused by high learning rates. The model updates its weights enormously and misses the perfect weight values. Loss value was stuck at 2.30 and was not decreasing. To cope with that, i changed *lr* value back to 0.01. Dropout = 0.2 was doing good decreasing loss values but still there was a little *overfitting*.
+- These two modifications leaded to a problem that i had not experienced before. That was *Overshooting* which is caused by high learning rates. In that case,The model updates its weights enormously and misses the perfect weight values. Loss value was stuck at 2.30 and was not decreasing. To cope with that, i changed *lr* value back to 0.01. Dropout = 0.2 was doing good decreasing loss values but still there was a little *overfitting*.
 - So i deployed a *scheduler* using *StepLR* algorithm in order to reduce *lr* value by 50/50 after a certain point. It solved the remaining *overfitting* problem. But i knew that i could go further.  
 
 - To bring the model to the next level, i added two more Conv layers (conv-bn-relu-pooling). It served well and the model started to extract more features out of the image. As you can guess, training loss value decreased and accuracies increased dramatically.
@@ -121,10 +121,10 @@ First of all, i have discovered a lot of new details about AI models in this pro
 Finally, i have reached the most reliable loss and accuracy values [Performance Evaluation](#performance-evaluation). These levels are also known as the limit for a CNN-based model without using any pre-trained model like ResNet.
 
 #### The next station for the CNNs
-In order to serve my curiosity, i am going to include a pre-trained model using Transfer Learning to see the realest limit of the CNNS.
+In order to serve my curiosity, i am going to include a pre-trained by model using Transfer Learning to see the realest limit of the CNNS.
 
 ## Installation and usage
-You can give it a try by copying this repo to your local computer and see how accurate it can be predicting 10 different classes.<br>
+You can give it a try by copying this repo to your local computer and see how accurate the model can be predicting 10 different classes.<br>
 1-
 ```bash
 #Clone the repo to your local computer.
@@ -137,7 +137,7 @@ cd CNN-classification
 ```
 3-
 ```bash
-#Install the required libraries
+#Install the required libraries.
 pip install -r requirements.txt
 ```
 4-
@@ -182,7 +182,7 @@ CNN-classification/
 ### License
 
 ### 📬 Contact
-- Herhangi bir hatam varsa bana bildirin🙋. Katkılarınızı bekliyorum 🙂.Bana buradan ulaşabilirsiniz:
+- Let me know if i have done any mistakes 🙋. Im waiting for your contributions 🙂. Here is where you can find me:
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/halil-ero%C4%9Flu-5505783a1)
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/halileroglu711)
