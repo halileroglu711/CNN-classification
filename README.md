@@ -180,6 +180,8 @@ CNN-classification/
 └── test.py
 ```
 ### License
+This project is licensed under the **MIT License**
+Check the [LICENSE](LICENSE) file for further detail.
 
 ### 📬 Contact
 - Let me know if i have done any mistakes 🙋. Im waiting for your contributions 🙂. Here is where you can find me:
