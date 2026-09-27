@@ -179,8 +179,8 @@ CNN-classification/
 ├── requirements.txt
 └── test.py
 ```
-### License
-This project is licensed under the **MIT License**
+### 💼 License
+This project is licensed under the **MIT License**. <br>
 Check the [LICENSE](LICENSE) file for further detail.
 
 ### 📬 Contact
