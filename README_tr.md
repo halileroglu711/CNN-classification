@@ -179,8 +179,9 @@ CNN-classification/
 ├── requirements.txt
 └── test.py
 ```
-### License
-
+### 💼 License
+Bu proje **MIT Lisansı** ile lisanslıdır. <br>
+Daha fazla bilgi için [LİSANS](LICENSE) dosyasına göz atın.
 
 
 ### 📬 İletişim
